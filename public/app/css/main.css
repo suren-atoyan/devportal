@@ -1,0 +1,23 @@
+body {
+	background-color: white;
+	padding: 2%; 
+}
+
+#app_composite .field label {
+	cursor: pointer;
+}
+
+.langs_tab {
+	height: 100%;
+}
+
+/* terminal */
+
+#js_terminal {
+    width: 100%;
+    height: 300px;
+    /* float: right; */
+    bottom: -291px;
+    position: relative;
+    display: none;
+}
