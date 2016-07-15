@@ -5,23 +5,31 @@ const path = require('path');
 
 
 module.exports = {
-  entry: './public/app/app',
+  entry: {
+    app:    './public/app/app',
+    login:  './public/app/login'
+  },
   
   output: {
-    filename: './public/app/bundle.js'
+    path: __dirname + '/public/build/',
+    publicPath: '/build/',
+    library: '[name]',
+    filename: '[name].js',
   },
 
   module: {
     loaders: [
       {
         test:     /\.js/,
-        exclude:  /node_modules/,
+        exclude:  [/\/node_modules\//, /\/semantic\//],
         loader:   'babel-loader',
         query: {
           presets: ['es2015']
         }
       }
     ],
+
+    // noParse: [/\/node_modules\//, /\/semantic\//],
   },
   
   plugins: [
@@ -30,6 +38,11 @@ module.exports = {
     
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(NODE_ENV)
+    }),
+
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      chunks: ['app', 'login']
     })
   ],
 

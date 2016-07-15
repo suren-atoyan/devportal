@@ -1,10 +1,9 @@
 import Backbone from 'backbone';
 import jQuery from '../../../node_modules/jquery/dist/jquery.js';
-import '../../../node_modules/jquery.terminal/js/jquery.terminal.min.js';
 
 var tpl = require('../tpls/app.composite.js');
 
-var test = Backbone.View.extend({
+var AppView = Backbone.View.extend({
   el: '#app_composite',
 
   events: {
@@ -58,28 +57,35 @@ var test = Backbone.View.extend({
       },
 
   terminal_show: function(e) {
-    jQuery(function($, undefined) {
-      $('#js_terminal').terminal(function(command, term) {
-          if (command !== '') {
-              try {
-                  var result = window.eval(command);
-                  if (result !== undefined) {
-                      term.echo(new String(result));
+    var self = this;
+    require.ensure(
+      ['../../../node_modules/jquery.terminal/js/jquery.terminal.min.js'],
+      function(require) {
+        require('../../../node_modules/jquery.terminal/js/jquery.terminal.min.js');
+        jQuery(function($, undefined) {
+          $('#js_terminal').terminal(function(command, term) {
+              if (command !== '') {
+                  try {
+                      var result = window.eval(command);
+                      if (result !== undefined) {
+                          term.echo(new String(result));
+                      }
+                  } catch(e) {
+                      term.error(new String(e));
                   }
-              } catch(e) {
-                  term.error(new String(e));
+              } else {
+                 term.echo('');
               }
-          } else {
-             term.echo('');
-          }
-      }, {
-          greetings: 'Javascript Interpreter',
-          name: 'js_terminal',
-          height: 300,
-          prompt: 'js$ '
-      });
-    });
-    this.$('#js_terminal').toggle('show');
+          }, {
+              greetings: 'Javascript Interpreter',
+              name: 'js_terminal',
+              height: 300,
+              prompt: 'js$ '
+          });
+        });
+        self.$('#js_terminal').toggle('show');
+      }
+    )
   },
 
   load_messages: function(e) {
@@ -88,4 +94,4 @@ var test = Backbone.View.extend({
   }
 });
 
-export default test;
+export default AppView;
